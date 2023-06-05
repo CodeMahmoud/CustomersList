@@ -1,24 +1,39 @@
 import { Injectable } from "@angular/core";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 
-import { Observable } from "rxjs";
-import { map, catchError } from "rxjs";
-import { throwError } from "rxjs";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 
-import { ICustomer, IOrder } from "../shared/interfaces";
+import { ICustomer } from "../shared/interfaces";
 
 @Injectable()
 export class DataService {
-    baseUrl: string = 'assests/';
+  baseUrl: string = 'assets/';
 
-    constructor() { }
+  constructor(private http: HttpClient) { }
 
-    private handleError(error: any) {
-        console.log('server error', error);
-        if(error.error instanceof Error) {
-            const errMessage =error.error.message;
-            return throwError(() => errMessage);
+  getCustomers(): Observable<ICustomer[]> {
+    return this.http.get<ICustomer[]>(this.baseUrl + 'customers.json').pipe(
+      catchError(this.handleError)
+    ) as Observable<ICustomer[]>;
   }
-  return throwError(() => error || 'Node.js server error');
+
+  getCustomer(id: number): Observable<ICustomer> {
+    return this.http.get<ICustomer[]>(this.baseUrl + 'customers.json').pipe(
+      map((customers: any[]) => {
+        let customer = customers.find((cust: { id: number; }) => cust.id === id);
+        return (customer) ? customer : null;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: any) {
+    console.log('server error', error);
+    if (error.error instanceof Error) {
+      const errMessage = error.error.message;
+      return throwError(() => errMessage);
     }
+    return throwError(() => error || 'Node.js server error');
+  }
 }
