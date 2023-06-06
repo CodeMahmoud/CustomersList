@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, throwError } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 
-import { ICustomer } from "../shared/interfaces";
+import { ICustomer, IOrder } from "../shared/interfaces";
 
 @Injectable()
 export class DataService {
@@ -27,6 +27,17 @@ export class DataService {
       catchError(this.handleError)
     );
   }
+
+      getOrders(id: number) : Observable<IOrder[]> {
+      return this.http.get<IOrder[]>(this.baseUrl + 'orders.json')
+        .pipe(
+          map(orders => {
+            let custOrders = orders.filter((order: IOrder) => order.customerId === id);
+            return custOrders;
+          }),
+          catchError(this.handleError)
+        );
+    }
 
   private handleError(error: any) {
     console.log('server error', error);

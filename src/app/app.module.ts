@@ -5,9 +5,12 @@ import { CustomersModule } from './customers/customers.module';
 import { AppComponent }  from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module';
+import { AppRoutingModule } from './app-routing.module';
+import { OrdersModule } from './orders/orders.module';
+
 
 @NgModule({
-  imports:      [ BrowserModule, CoreModule, CustomersModule, SharedModule ],
+  imports:      [ BrowserModule, CoreModule, CustomersModule, OrdersModule, SharedModule, AppRoutingModule],
   declarations: [ AppComponent ],
   bootstrap:    [ AppComponent ]
 })
